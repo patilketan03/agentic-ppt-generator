@@ -1,0 +1,117 @@
+{
+  "name": "Agentic PPT Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "55b9de36-208b-43d8-80ba-87a2f58d5319",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -240,
+        -32
+      ],
+      "id": "69f72505-d5e7-42be-80c4-144e29e34657",
+      "name": "PPT Input",
+      "webhookId": "55b9de36-208b-43d8-80ba-87a2f58d5319"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert Python developer.\n\nGenerate only executable Python code using the python-pptx library to create a well-structured PowerPoint presentation based strictly on the following user input:\n\n{{ $json.body.prompt }}\n\nMandatory Rules:\n\nOutput only valid Python code (no explanations, no markdown, no extra text).\n\nUse from pptx import Presentation and standard pptx utilities.\n\nCreate slides in a logical order (Title slide → Content slides → Summary/Conclusion).\n\nEnsure no text overlapping: use proper slide layouts, margins, spacing, and font sizes.\n\nAutomatically split long text into bullet points or multiple slides.\n\nMaintain consistent alignment and readable formatting across all slides.\n\nUse appropriate slide layouts for titles, bullet lists, and sections.\n\nUse a simple, light, professional background color across all pages\n\nThe script must generate the PowerPoint file when executed.\n\nDo not include instructions on how to save, open, or download the file.\n\nDo not print anything to the console.\n\nDo not include explanations or comments outside the code.\n\nReturn only executable Python code.",
+        "options": {
+          "systemMessage": "=You are a helpful assistant and you are having a 10+ years experience in creating ppt based on a topic given"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        32,
+        -32
+      ],
+      "id": "dfdc625f-aaeb-4303-864c-2f9cd4e945fb",
+      "name": "PPT Generator"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        192
+      ],
+      "id": "612f46f2-0773-4794-953d-e7b601c8b13e",
+      "name": "Gemini LLM",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bpPF2fcNku5KSe0t",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        400,
+        -32
+      ],
+      "id": "e666d499-0640-4bb6-837b-ee210675e475",
+      "name": "PPT Response"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "PPT Input": {
+      "main": [
+        [
+          {
+            "node": "PPT Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PPT Generator": {
+      "main": [
+        [
+          {
+            "node": "PPT Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini LLM": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "PPT Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "versionId": "de6e7e27-39d6-4c5a-8ac6-7df2545ac38a",
+  "meta": {
+    "templateId": "ready-to-run-ai-workflow",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "743cbbac62b7c60af46919472db353a5ec331c63003b2c45e7ec2742329cbae5"
+  },
+  "id": "OTNXBwdXId5Ukldt",
+  "tags": []
+}
